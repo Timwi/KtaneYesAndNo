@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 114256920797694850}
   - component: {fileID: 114689992202896040}
   - component: {fileID: 114053762380568158}
+  - component: {fileID: 114266018827101200}
   m_Layer: 0
   m_Name: Yes and No
   m_TagString: Untagged
@@ -1080,7 +1081,7 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1466122975607482}
-  m_Text: I pressed NO, don't do the same
+  m_Text: 
   m_OffsetZ: 0
   m_CharacterSize: 0.2
   m_LineSpacing: 1
@@ -1120,6 +1121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Audio: {fileID: 114126055397138458}
   Bomb: {fileID: 114931664327480378}
+  RuleSeed: {fileID: 114266018827101200}
   leftButton: {fileID: 114492179918736498}
   rightButton: {fileID: 114773944048361442}
   question: {fileID: 102955775048675332}
@@ -1174,6 +1176,18 @@ MonoBehaviour:
   ModuleType: yesandno
   ModuleDisplayName: Yes and No
   RequiresTimerVisibility: 0
+--- !u!114 &114266018827101200
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1156395870987846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adf69c2de51bd3c43bbd9bc22578ee08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _seed: 1
 --- !u!114 &114271558875109248
 MonoBehaviour:
   m_ObjectHideFlags: 1

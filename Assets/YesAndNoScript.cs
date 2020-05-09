@@ -8,7 +8,6 @@ using Random = UnityEngine.Random;
 
 public class YesAndNoScript : MonoBehaviour
 {
-
     public KMAudio Audio;
     public KMBombInfo Bomb;
     public KMRuleSeedable RuleSeed;
@@ -95,13 +94,13 @@ public class YesAndNoScript : MonoBehaviour
         new Condition { Explanation = "The button is neither magenta nor red", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "magenta").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "red").Color},
         new Condition { Explanation = "The button is neither orange nor red", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "orange").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "red").Color},
         new Condition { Explanation = "The button's color is warm", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "orange").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "red").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "yellow").Color},
-        new Condition { Explanation = "The button's color isn't warm", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "orange").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "red").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "yellow").Color},
+        new Condition { Explanation = "The button's color isn’t warm", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "orange").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "red").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "yellow").Color},
         new Condition { Explanation = "The button's color is cold", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "blue").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "green").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "magenta").Color},
-        new Condition { Explanation = "The button's color isn't cold", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "blue").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "green").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "magenta").Color},
-        new Condition { Explanation = "The button is labled 'yes'", Cond = button => button.GetComponentInChildren<TextMesh>().text == "YES"},
-        new Condition { Explanation = "The button is not labled 'Yes'", Cond = button => button.GetComponentInChildren<TextMesh>().text == "NO"},
-        new Condition { Explanation = "The button is labled 'No'", Cond = button => button.GetComponentInChildren<TextMesh>().text == "NO"},
-        new Condition { Explanation = "The button is not labled 'No'", Cond = button => button.GetComponentInChildren<TextMesh>().text == "YES"},
+        new Condition { Explanation = "The button's color isn’t cold", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "blue").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "green").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "magenta").Color},
+        new Condition { Explanation = "The button is labled ‘Yes’", Cond = button => button.GetComponentInChildren<TextMesh>().text == "YES"},
+        new Condition { Explanation = "The button is not labled ‘Yes’", Cond = button => button.GetComponentInChildren<TextMesh>().text == "NO"},
+        new Condition { Explanation = "The button is labled ‘No’", Cond = button => button.GetComponentInChildren<TextMesh>().text == "NO"},
+        new Condition { Explanation = "The button is not labled ‘No’", Cond = button => button.GetComponentInChildren<TextMesh>().text == "YES"},
     };
 
     private static readonly List<Switch> leftSwitch = new List<Switch>();
@@ -148,20 +147,19 @@ public class YesAndNoScript : MonoBehaviour
     {
         rnd = RuleSeed.GetRNG();
 
-        var ix = Enumerable.Range(0, allConditions.Count).ToList();
-        rnd.ShuffleFisherYates(ix);
+        var ixs = Enumerable.Range(0, allConditions.Count).ToList();
+        rnd.ShuffleFisherYates(ixs);
 
         for (int i = 0; i < 4; i++)
         {
-            leftSwitch.Add(new Switch { Explanation = allConditions[ix.First()].Explanation, Cond = allConditions[ix.First()].Cond, SwitchValue = rnd.Next(1, 5) });
-            ix.RemoveAt(0);
-            rightSwitch.Add(new Switch { Explanation = allConditions[ix.First()].Explanation, Cond = allConditions[ix.First()].Cond, SwitchValue = rnd.Next(1, 5) });
-            ix.RemoveAt(0);
+            leftSwitch.Add(new Switch { Explanation = allConditions[ixs.First()].Explanation, Cond = allConditions[ixs.First()].Cond, SwitchValue = rnd.Next(1, 5) });
+            ixs.RemoveAt(0);
+            rightSwitch.Add(new Switch { Explanation = allConditions[ixs.First()].Explanation, Cond = allConditions[ixs.First()].Cond, SwitchValue = rnd.Next(1, 5) });
+            ixs.RemoveAt(0);
         }
 
         leftSwitch.Add(new Switch { Explanation = "Otherwise", Cond = button => true, SwitchValue = rnd.Next(1, 5) });
         rightSwitch.Add(new Switch { Explanation = "Otherwise", Cond = button => true, SwitchValue = rnd.Next(1, 5) });
-
 
         MixButtons();
         StartCoroutine(Game());
