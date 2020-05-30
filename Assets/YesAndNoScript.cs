@@ -18,6 +18,7 @@ public class YesAndNoScript : MonoBehaviour
 
     public KMSelectable leftButton;
     public KMSelectable rightButton;
+    public KMSelectable resetButton;
     public TextMesh question;
 
     struct Colors
@@ -116,6 +117,8 @@ public class YesAndNoScript : MonoBehaviour
     private List<int> questionList;
     private List<YesAndNoQuestions.Question> questions;
     private MonoRandom rnd;
+    private bool resetDone = false;
+    private Coroutine resetActive;
 
     void Awake()
     {
@@ -140,6 +143,35 @@ public class YesAndNoScript : MonoBehaviour
             Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, rightButton.transform);
             inputMade = true;
             return false;
+        };
+
+        resetButton.OnInteract += delegate
+        {
+            if (moduleSolved)
+                return false;
+            rightButton.AddInteractionPunch();
+            Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, rightButton.transform);
+            resetActive = StartCoroutine(Reset());
+            return false;
+        };
+
+        resetButton.OnInteractEnded += delegate
+        {
+            if (!resetDone)
+            {
+                question.text = questions[questionList[currentQuestion]].Output;
+                StopCoroutine(resetActive);
+            }
+            else
+            {
+                timesLeft = 0;
+                timesRight = 0;
+                switchActive = false;
+                currentQuestion = 0;
+                question.text = questions[questionList[currentQuestion]].Output;
+                question.color = new Color32(255, 255, 255, 255);
+                Debug.LogFormat(@"[Yes and No #{0}] Module was reset", moduleId);
+            }
         };
     }
 
@@ -209,7 +241,7 @@ public class YesAndNoScript : MonoBehaviour
             yield return null;
         }
 
-        var gameLength = Random.Range(1, questions.Count > 50 ? 50 : questions.Count);
+        var gameLength = Random.Range(5, questions.Count > 15 ? 15 : questions.Count);
         var allQuestion = Enumerable.Range(0, questions.Count).ToList();
         allQuestion.Shuffle();
         questionList = allQuestion.Take(gameLength).ToList();
@@ -325,12 +357,33 @@ public class YesAndNoScript : MonoBehaviour
         }
     }
 
+    IEnumerator Reset()
+    {
+
+        var resetTime = 0;
+        var resetText = "Resetting module...";
+
+        while (resetTime < 2)
+        {
+            question.text = "";
+            for (int i = 0; i < resetText.Length; i++)
+            {
+                question.text += resetText[i];
+                yield return new WaitForSeconds(.1f);
+            }
+            resetTime++;
+        }
+        question.text = "Reset done";
+        question.color = color.First(cl => cl.ColorName == "green").Color;
+        resetDone = true;
+    }
+
+
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"!{0} yes/no/left/right/L/R/Y/N [press a button]";
+    private readonly string TwitchHelpMessage = @"!{0} yes/no/left/right/L/R/Y/N/reset [press a button]";
 #pragma warning restore 414
     IEnumerator ProcessTwitchCommand(string command)
     {
-        Match m;
         if (moduleSolved)
         {
             yield return "sendtochaterror The module is already solved.";
@@ -360,10 +413,18 @@ public class YesAndNoScript : MonoBehaviour
             leftButton.OnInteract();
             yield break;
         }
-        else if ((m = Regex.Match(command, @"^\s*(right|R)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)).Success)
+        else if (Regex.IsMatch(command, @"^\s*(right|R)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
         {
             yield return null;
             rightButton.OnInteract();
+            yield break;
+        }
+        else if (Regex.IsMatch(command, @"^\s*(reset)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            resetButton.OnInteract();
+            yield return new WaitUntil(() => resetDone);
+            resetButton.OnInteractEnded();
             yield break;
         }
         else
@@ -383,7 +444,7 @@ public class YesAndNoScript : MonoBehaviour
         while (!moduleSolved)
         {
             if (moduleSolved)
-                break;
+                yield break;
 
             if (questions[questionList[currentQuestion]].Answer == 0)
             {
