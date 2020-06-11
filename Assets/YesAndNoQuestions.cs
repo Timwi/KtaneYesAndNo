@@ -2,7 +2,8 @@
 
 public sealed class YesAndNoQuestions
 {
-    public string SiteUrl = @"http://forler.ddns.net:8000/YesAndNoAllQuestions.json";
+    public static string DefaultSiteUrl = @"https://ktane.timwi.de/More/YesAndNo/YesAndNoAllQuestions.json";
+    public string SiteUrl = @"https://ktane.timwi.de/More/YesAndNo/YesAndNoAllQuestions.json";
 
     public struct Question
     {
@@ -12,5 +13,5 @@ public sealed class YesAndNoQuestions
 
     public List<Question> questions = new List<Question>();
 
-    public int Version = 1;
+    public int Version = 2;
 }

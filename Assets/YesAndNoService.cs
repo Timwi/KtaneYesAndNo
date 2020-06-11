@@ -36,6 +36,11 @@ public class YesAndNoService : MonoBehaviour
                 _questions = JsonConvert.DeserializeObject<YesAndNoQuestions>(File.ReadAllText(_questionsFile), new StringEnumConverter());
                 if (_questions == null)
                     throw new Exception("Questions could not be read. Creating new questions...");
+                if (_questions.Version < 2)
+                {
+                    _questions.SiteUrl = YesAndNoQuestions.DefaultSiteUrl;
+                    _questions.Version = 2;
+                }
                 QuestionsLoaded = true;
                 Debug.LogFormat(@"[Yes and No Service] Questions file successfully loaded, trying to connect to web...");
             }

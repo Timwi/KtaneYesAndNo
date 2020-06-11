@@ -147,6 +147,8 @@ public class YesAndNoScript : MonoBehaviour
 
         resetButton.OnInteract += delegate
         {
+            if (resetActive != null)
+                StopCoroutine(resetActive);
             if (moduleSolved)
                 return false;
             rightButton.AddInteractionPunch();
@@ -164,6 +166,8 @@ public class YesAndNoScript : MonoBehaviour
             }
             else
             {
+                resetDone = false;
+                StopCoroutine(resetActive);
                 timesLeft = 0;
                 timesRight = 0;
                 switchActive = false;
@@ -373,6 +377,7 @@ public class YesAndNoScript : MonoBehaviour
             }
             resetTime++;
         }
+        yield return null;
         question.text = "Reset done";
         question.color = color.First(cl => cl.ColorName == "green").Color;
         resetDone = true;
