@@ -147,10 +147,10 @@ public class YesAndNoScript : MonoBehaviour
 
         resetButton.OnInteract += delegate
         {
-            if (resetActive != null)
-                StopCoroutine(resetActive);
             if (moduleSolved)
                 return false;
+            if (resetActive != null)
+                StopCoroutine(resetActive);
             rightButton.AddInteractionPunch();
             Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, rightButton.transform);
             resetActive = StartCoroutine(Reset());
@@ -159,6 +159,8 @@ public class YesAndNoScript : MonoBehaviour
 
         resetButton.OnInteractEnded += delegate
         {
+            if (moduleSolved)
+                goto skip;
             if (!resetDone)
             {
                 question.text = questions[questionList[currentQuestion]].Output;
@@ -176,6 +178,7 @@ public class YesAndNoScript : MonoBehaviour
                 question.color = new Color32(255, 255, 255, 255);
                 Debug.LogFormat(@"[Yes and No #{0}] Module was reset", moduleId);
             }
+            skip:;
         };
     }
 
