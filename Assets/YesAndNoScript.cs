@@ -193,11 +193,12 @@ public class YesAndNoScript : MonoBehaviour
 
         if (left ^ switchActive ^ (leftButton.GetComponentInChildren<TextMesh>().text == "YES") ^ (questions[questionList[currentQuestion]].Answer == 0))
         {
-            Debug.LogFormat(@"[Yes and No #{0}] You pressed {1} when I expected {2}. Strike!", moduleId, left ? "left" : "right", left ? "right" : "left");
+            Debug.LogFormat(@"[Yes and No #{0}] Question: “{3}” — you pressed {1} when I expected {2}. Strike!", moduleId, left ? "left" : "right", left ? "right" : "left", questions[questionList[currentQuestion]].Output);
             GetComponent<KMBombModule>().HandleStrike();
             timesLeft = 0;
             timesRight = 0;
             switchActive = false;
+            Debug.LogFormat(@"[Yes and No #{0}] Press counters and switch have been reset.");
         }
         else
         {
@@ -205,6 +206,8 @@ public class YesAndNoScript : MonoBehaviour
                 timesLeft++;
             else
                 timesRight++;
+
+            Debug.LogFormat(@"[Yes and No #{0}] Question: “{2}” — pressing {1} was correct.", moduleId, left ? "left" : "right", questions[questionList[currentQuestion]].Output);
 
             if (timesLeft == leftSwitch.First(eva => eva.Cond(leftButton.gameObject)).SwitchValue)
             {

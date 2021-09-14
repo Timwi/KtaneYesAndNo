@@ -14,7 +14,9 @@ MonoBehaviour:
   id: yesandno
   title: Yes and No
   author: Goofy
-  description: Yes and no, no and yes. Ohhhh the choice.
+  description: "[b]This is a re-upload of Goofy\u2019s original module with bugfixes
+    and improvements. Please [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2089035682]UNSUBSCRIBE
+    from the old version[/url].[/b]\n\nYes and no, no and yes. Ohhhh the choice."
   version: 1.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: ea95d950ff34a114ab1ea549cd6a6c9f, type: 3}
