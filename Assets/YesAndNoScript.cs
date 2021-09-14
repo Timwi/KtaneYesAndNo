@@ -12,10 +12,6 @@ public class YesAndNoScript : MonoBehaviour
     public KMBombInfo Bomb;
     public KMRuleSeedable RuleSeed;
 
-    static int moduleIdCounter = 1;
-    int moduleId;
-    private bool moduleSolved;
-
     public KMSelectable leftButton;
     public KMSelectable rightButton;
     public KMSelectable resetButton;
@@ -107,18 +103,20 @@ public class YesAndNoScript : MonoBehaviour
     private static readonly List<Switch> leftSwitch = new List<Switch>();
     private static readonly List<Switch> rightSwitch = new List<Switch>();
 
+    private static int moduleIdCounter = 1;
+    private int moduleId;
+    private bool moduleSolved;
+
     private int currentQuestion = 0;
     private int timesLeft = 0;
     private int timesRight = 0;
-    private bool leftPressed = false;
-    private bool inputMade = false;
     private bool switchActive = false;
-    private bool correctInput = false;
     private List<int> questionList;
     private List<YesAndNoQuestions.Question> questions;
     private MonoRandom rnd;
     private bool resetDone = false;
     private Coroutine resetActive;
+    private bool catastrophicProblem;
 
     void Awake()
     {
@@ -130,8 +128,7 @@ public class YesAndNoScript : MonoBehaviour
                 return false;
             leftButton.AddInteractionPunch();
             Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, leftButton.transform);
-            leftPressed = true;
-            inputMade = true;
+            Press(left: true);
             return false;
         };
 
@@ -141,7 +138,7 @@ public class YesAndNoScript : MonoBehaviour
                 return false;
             rightButton.AddInteractionPunch();
             Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, rightButton.transform);
-            inputMade = true;
+            Press(left: false);
             return false;
         };
 
@@ -180,6 +177,61 @@ public class YesAndNoScript : MonoBehaviour
             }
             skip:;
         };
+    }
+
+    private void Press(bool left)
+    {
+        if (catastrophicProblem)
+        {
+            GetComponent<KMBombModule>().HandlePass();
+            moduleSolved = true;
+            return;
+        }
+
+        if (questionList == null)   // Questions have not loaded yet
+            return;
+
+        if (left ^ switchActive ^ (leftButton.GetComponentInChildren<TextMesh>().text == "YES") ^ (questions[questionList[currentQuestion]].Answer == 0))
+        {
+            Debug.LogFormat(@"[Yes and No #{0}] You pressed {1} when I expected {2}. Strike!", moduleId, left ? "left" : "right", left ? "right" : "left");
+            GetComponent<KMBombModule>().HandleStrike();
+            timesLeft = 0;
+            timesRight = 0;
+            switchActive = false;
+        }
+        else
+        {
+            if (left)
+                timesLeft++;
+            else
+                timesRight++;
+
+            if (timesLeft == leftSwitch.First(eva => eva.Cond(leftButton.gameObject)).SwitchValue)
+            {
+                Debug.LogFormat(@"[Yes and No #{0}] Left switch occured after {1} button presses. Resetting left button counter.", moduleId, timesLeft);
+                switchActive = !switchActive;
+                timesLeft = 0;
+            }
+            if (timesRight == rightSwitch.First(eva => eva.Cond(rightButton.gameObject)).SwitchValue)
+            {
+                Debug.LogFormat(@"[Yes and No #{0}] Right switch occured after {1} button presses. Resetting right button counter.", moduleId, timesRight);
+                switchActive = !switchActive;
+                timesRight = 0;
+            }
+
+            currentQuestion++;
+
+            if (currentQuestion == questionList.Count)
+            {
+                Debug.LogFormat(@"[Yes and No #{0}] Module solved.", moduleId);
+                question.text = "Solved";
+                question.color = color.First(cl => cl.ColorName == "green").Color;
+                moduleSolved = true;
+                GetComponent<KMBombModule>().HandlePass();
+            }
+            else
+                question.text = questions[questionList[currentQuestion]].Output;
+        }
     }
 
     void Start()
@@ -225,14 +277,9 @@ public class YesAndNoScript : MonoBehaviour
         {
             Debug.LogFormat(@"[Yes and No #{0}] Catastrophic problem: Yes and No Service is not present.", moduleId);
             question.text = "Press anything to solve";
-            yield return new WaitUntil(() => inputMade);
-            GetComponent<KMBombModule>().HandlePass();
-            moduleSolved = true;
-            StopAllCoroutines();
-            yield return null;
+            catastrophicProblem = true;
+            yield break;
         }
-
-        StartCoroutine(Switcher());
 
         yield return new WaitUntil(() => yanService.QuestionsLoaded);
 
@@ -241,11 +288,8 @@ public class YesAndNoScript : MonoBehaviour
         {
             Debug.LogFormat(@"[Yes and No #{0}] Catastrophic problem: Yes and No Service did not respond with any questions. Please contact Goofy on Discord ASAP!");
             question.text = "Press anything to solve";
-            yield return new WaitUntil(() => inputMade);
-            GetComponent<KMBombModule>().HandlePass();
-            moduleSolved = true;
-            StopAllCoroutines();
-            yield return null;
+            catastrophicProblem = true;
+            yield break;
         }
 
         var gameLength = Random.Range(5, questions.Count > 15 ? 15 : questions.Count);
@@ -274,94 +318,8 @@ public class YesAndNoScript : MonoBehaviour
         Debug.LogFormat(@"[Yes and No #{0}] Left switch will occur after {1} button presses. Reason: {2}", moduleId, leftSwitch.First(eva => eva.Cond(leftButton.gameObject)).SwitchValue, leftSwitch.First(eva => eva.Cond(leftButton.gameObject)).Explanation);
         Debug.LogFormat(@"[Yes and No #{0}] Right switch will occur after {1} button presses. Reason: {2}", moduleId, rightSwitch.First(eva => eva.Cond(rightButton.gameObject)).SwitchValue, rightSwitch.First(eva => eva.Cond(rightButton.gameObject)).Explanation);
         Debug.LogFormat(@"[Yes and No #{0}] ----------DEFUSER INPUT----------", moduleId);
-        while (currentQuestion < gameLength)
 
-        {
-            question.text = questions[questionList[currentQuestion]].Output;
-            yield return StartCoroutine(InputTime());
-            currentQuestion++;
-        }
-        Debug.LogFormat(@"[Yes and No #{0}] Module solved.", moduleId);
-        question.text = "Solved";
-        question.color = color.First(cl => cl.ColorName == "green").Color;
-        moduleSolved = true;
-        GetComponent<KMBombModule>().HandlePass();
-
-        yield return null;
-    }
-
-    IEnumerator InputTime()
-    {
-        while (!correctInput)
-        {
-            yield return new WaitUntil(() => inputMade);
-            inputMade = false;
-            if (leftPressed)
-            {
-                if (leftButton.GetComponentInChildren<TextMesh>().text == "YES" && !switchActive && questions[questionList[currentQuestion]].Answer == 1)
-                    correctInput = true;
-                else if (leftButton.GetComponentInChildren<TextMesh>().text == "YES" && switchActive && questions[questionList[currentQuestion]].Answer == 0)
-                    correctInput = true;
-                else if (leftButton.GetComponentInChildren<TextMesh>().text == "NO" && !switchActive && questions[questionList[currentQuestion]].Answer == 0)
-                    correctInput = true;
-                else if (leftButton.GetComponentInChildren<TextMesh>().text == "NO" && switchActive && questions[questionList[currentQuestion]].Answer == 1)
-                    correctInput = true;
-                else
-                    GetComponent<KMBombModule>().HandleStrike();
-            }
-            else
-            {
-                if (rightButton.GetComponentInChildren<TextMesh>().text == "YES" && !switchActive && questions[questionList[currentQuestion]].Answer == 1)
-                    correctInput = true;
-                else if (rightButton.GetComponentInChildren<TextMesh>().text == "YES" && switchActive && questions[questionList[currentQuestion]].Answer == 0)
-                    correctInput = true;
-                else if (rightButton.GetComponentInChildren<TextMesh>().text == "NO" && !switchActive && questions[questionList[currentQuestion]].Answer == 0)
-                    correctInput = true;
-                else if (rightButton.GetComponentInChildren<TextMesh>().text == "NO" && switchActive && questions[questionList[currentQuestion]].Answer == 1)
-                    correctInput = true;
-                else
-                    GetComponent<KMBombModule>().HandleStrike();
-            }
-            if (correctInput)
-            {
-                if (leftPressed)
-                {
-                    timesLeft++;
-                }
-                else
-                {
-                    timesRight++;
-                }
-            }
-            leftPressed = false;
-        }
-        correctInput = false;
-    }
-
-    IEnumerator Switcher()
-    {
-        while (!moduleSolved)
-        {
-            yield return new WaitForSeconds(.1f);
-            if (timesLeft == leftSwitch.First(eva => eva.Cond(leftButton.gameObject)).SwitchValue)
-            {
-                Debug.LogFormat(@"[Yes and No #{0}] Left switch occured after {1} button presses. Resetting left button counter.", moduleId, timesLeft);
-                if (!switchActive)
-                    switchActive = true;
-                else
-                    switchActive = false;
-                timesLeft = 0;
-            }
-            if (timesRight == rightSwitch.First(eva => eva.Cond(rightButton.gameObject)).SwitchValue)
-            {
-                Debug.LogFormat(@"[Yes and No #{0}] Right switch occured after {1} button presses. Resetting right button counter.", moduleId, timesRight);
-                if (!switchActive)
-                    switchActive = true;
-                else
-                    switchActive = false;
-                timesRight = 0;
-            }
-        }
+        question.text = questions[questionList[0]].Output;
     }
 
     IEnumerator Reset()
@@ -385,7 +343,6 @@ public class YesAndNoScript : MonoBehaviour
         question.color = color.First(cl => cl.ColorName == "green").Color;
         resetDone = true;
     }
-
 
 #pragma warning disable 414
     private readonly string TwitchHelpMessage = @"!{0} yes/no/left/right/L/R/Y/N/reset [press a button]";
