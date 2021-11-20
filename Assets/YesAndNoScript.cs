@@ -16,6 +16,7 @@ public class YesAndNoScript : MonoBehaviour
     public KMSelectable rightButton;
     public KMSelectable resetButton;
     public TextMesh question;
+    public TextMesh progressText;
 
     struct Colors
     {
@@ -198,7 +199,7 @@ public class YesAndNoScript : MonoBehaviour
             timesLeft = 0;
             timesRight = 0;
             switchActive = false;
-            Debug.LogFormat(@"[Yes and No #{0}] Press counters and switch have been reset.");
+            Debug.LogFormat(@"[Yes and No #{0}] Press counters and switch have been reset.", moduleId);
         }
         else
         {
@@ -234,11 +235,15 @@ public class YesAndNoScript : MonoBehaviour
             }
             else
                 question.text = questions[questionList[currentQuestion]].Output;
+
+            progressText.text = string.Format("{0}<color=#808080>{1}</color>", new string('•', currentQuestion), new string('•', questionList.Count - currentQuestion));
         }
     }
 
     void Start()
     {
+        Debug.LogFormat(@"[Yes and No #{0}] Version: 1.0", moduleId);
+
         rnd = RuleSeed.GetRNG();
 
         var ixs = Enumerable.Range(0, allConditions.Count).ToList();
@@ -289,7 +294,7 @@ public class YesAndNoScript : MonoBehaviour
         questions = yanService.getQuestions();
         if (questions == null)
         {
-            Debug.LogFormat(@"[Yes and No #{0}] Catastrophic problem: Yes and No Service did not respond with any questions. Please contact Goofy on Discord ASAP!");
+            Debug.LogFormat(@"[Yes and No #{0}] Catastrophic problem: Yes and No Service did not respond with any questions. Please contact Timwi on Discord.", moduleId);
             question.text = "Press anything to solve";
             catastrophicProblem = true;
             yield break;
@@ -323,11 +328,11 @@ public class YesAndNoScript : MonoBehaviour
         Debug.LogFormat(@"[Yes and No #{0}] ----------DEFUSER INPUT----------", moduleId);
 
         question.text = questions[questionList[0]].Output;
+        progressText.text = string.Format("<color=#808080>{0}</color>", new string('•', questionList.Count));
     }
 
     IEnumerator Reset()
     {
-
         var resetTime = 0;
         var resetText = "Resetting module...";
 
