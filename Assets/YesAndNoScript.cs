@@ -349,6 +349,7 @@ public class YesAndNoScript : MonoBehaviour
         yield return null;
         question.text = "Reset done";
         question.color = color.First(cl => cl.ColorName == "green").Color;
+        progressText.text = string.Format("<color=#808080>{0}</color>", new string('•', questionList.Count));
         resetDone = true;
     }
 
