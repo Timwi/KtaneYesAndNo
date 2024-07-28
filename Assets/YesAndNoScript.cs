@@ -47,62 +47,8 @@ public class YesAndNoScript : MonoBehaviour
         new Colors { ColorName = "red", Color = new Color32(243, 32, 32, 255) }
     };
 
-    private static readonly List<Condition> allConditions = new List<Condition>()
-    {
-        new Condition { Explanation = "The button is blue", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "blue").Color},
-        new Condition { Explanation = "The button is green", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "green").Color},
-        new Condition { Explanation = "The button is yellow", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "yellow").Color},
-        new Condition { Explanation = "The button is magenta", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "magenta").Color},
-        new Condition { Explanation = "The button is orange", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "orange").Color},
-        new Condition { Explanation = "The button is red", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "red").Color},
-        new Condition { Explanation = "The button is not blue", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "blue").Color},
-        new Condition { Explanation = "The button is not green", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "green").Color},
-        new Condition { Explanation = "The button is not yellow", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "yellow").Color},
-        new Condition { Explanation = "The button is not magenta", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "magenta").Color},
-        new Condition { Explanation = "The button is not orange", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "orange").Color},
-        new Condition { Explanation = "The button is not red", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "red").Color},
-        new Condition { Explanation = "The button is either blue or green", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "blue").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "green").Color},
-        new Condition { Explanation = "The button is either blue or yellow", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "blue").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "yellow").Color},
-        new Condition { Explanation = "The button is either blue or magenta", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "blue").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "magenta").Color},
-        new Condition { Explanation = "The button is either blue or orange", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "blue").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "orange").Color},
-        new Condition { Explanation = "The button is either blue or red", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "blue").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "red").Color},
-        new Condition { Explanation = "The button is either green or yellow", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "green").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "yellow").Color},
-        new Condition { Explanation = "The button is either green or magenta", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "green").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "magenta").Color},
-        new Condition { Explanation = "The button is either green or orange", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "green").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "orange").Color},
-        new Condition { Explanation = "The button is either green or red", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "green").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "red").Color},
-        new Condition { Explanation = "The button is either yellow or magenta", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "yellow").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "magenta").Color},
-        new Condition { Explanation = "The button is either yellow or orange", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "yellow").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "orange").Color},
-        new Condition { Explanation = "The button is either yellow or red", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "yellow").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "red").Color},
-        new Condition { Explanation = "The button is either magenta or orange", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "magenta").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "orange").Color},
-        new Condition { Explanation = "The button is either magenta or red", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "magenta").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "red").Color},
-        new Condition { Explanation = "The button is either orange or red", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "orange").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "red").Color},
-        new Condition { Explanation = "The button is neither blue nor green", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "blue").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "green").Color},
-        new Condition { Explanation = "The button is neither blue nor yellow", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "blue").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "yellow").Color},
-        new Condition { Explanation = "The button is neither blue nor magenta", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "blue").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "magenta").Color},
-        new Condition { Explanation = "The button is neither blue nor orange", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "blue").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "orange").Color},
-        new Condition { Explanation = "The button is neither blue nor red", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "blue").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "red").Color},
-        new Condition { Explanation = "The button is neither green nor yellow", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "green").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "yellow").Color},
-        new Condition { Explanation = "The button is neither green nor magenta", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "green").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "magenta").Color},
-        new Condition { Explanation = "The button is neither green nor orange", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "green").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "orange").Color},
-        new Condition { Explanation = "The button is neither green nor red", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "green").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "red").Color},
-        new Condition { Explanation = "The button is neither yellow nor magenta", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "yellow").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "magenta").Color},
-        new Condition { Explanation = "The button is neither yellow nor orange", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "yellow").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "orange").Color},
-        new Condition { Explanation = "The button is neither yellow nor red", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "yellow").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "red").Color},
-        new Condition { Explanation = "The button is neither magenta nor orange", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "magenta").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "orange").Color},
-        new Condition { Explanation = "The button is neither magenta nor red", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "magenta").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "red").Color},
-        new Condition { Explanation = "The button is neither orange nor red", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "orange").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "red").Color},
-        new Condition { Explanation = "The button's color is warm", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "orange").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "red").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "yellow").Color},
-        new Condition { Explanation = "The button's color isn’t warm", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "orange").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "red").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "yellow").Color},
-        new Condition { Explanation = "The button's color is cold", Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "blue").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "green").Color || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == "magenta").Color},
-        new Condition { Explanation = "The button's color isn’t cold", Cond = button => button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "blue").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "green").Color && button.GetComponent<MeshRenderer>().material.color != color.First(cl => cl.ColorName == "magenta").Color},
-        new Condition { Explanation = "The button is labled ‘Yes’", Cond = button => button.GetComponentInChildren<TextMesh>().text == "YES"},
-        new Condition { Explanation = "The button is not labled ‘Yes’", Cond = button => button.GetComponentInChildren<TextMesh>().text == "NO"},
-        new Condition { Explanation = "The button is labled ‘No’", Cond = button => button.GetComponentInChildren<TextMesh>().text == "NO"},
-        new Condition { Explanation = "The button is not labled ‘No’", Cond = button => button.GetComponentInChildren<TextMesh>().text == "YES"},
-    };
-
-    private static readonly List<Switch> leftSwitch = new List<Switch>();
-    private static readonly List<Switch> rightSwitch = new List<Switch>();
+    private static Switch[] leftSwitch;
+    private static Switch[] rightSwitch;
 
     private static int moduleIdCounter = 1;
     private int moduleId;
@@ -212,13 +158,13 @@ public class YesAndNoScript : MonoBehaviour
 
             if (timesLeft == leftSwitch.First(eva => eva.Cond(leftButton.gameObject)).SwitchValue)
             {
-                Debug.LogFormat(@"[Yes and No #{0}] Left switch occured after {1} button presses. Resetting left button counter.", moduleId, timesLeft);
+                Debug.LogFormat(@"[Yes and No #{0}] Left switch occurred after {1} button presses. Resetting left button counter.", moduleId, timesLeft);
                 switchActive = !switchActive;
                 timesLeft = 0;
             }
             if (timesRight == rightSwitch.First(eva => eva.Cond(rightButton.gameObject)).SwitchValue)
             {
-                Debug.LogFormat(@"[Yes and No #{0}] Right switch occured after {1} button presses. Resetting right button counter.", moduleId, timesRight);
+                Debug.LogFormat(@"[Yes and No #{0}] Right switch occurred after {1} button presses. Resetting right button counter.", moduleId, timesRight);
                 switchActive = !switchActive;
                 timesRight = 0;
             }
@@ -240,25 +186,76 @@ public class YesAndNoScript : MonoBehaviour
         }
     }
 
+    private Switch[] GetRuleSeedForButton(MonoRandom rnd)
+    {
+        var colors = new List<string> { "red", "orange", "yellow", "green", "blue", "magenta" };
+        var rules = new List<Switch>();
+
+        var makeSingleColorRule = new Action(() =>
+        {
+            // Rule with a single color
+            var c = rnd.Next(0, colors.Count);
+            var colorName = colors[c];
+            colors.RemoveAt(c);
+            rules.Add(new Switch
+            {
+                Explanation = string.Format("The button is {0}", colorName),
+                Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == colorName).Color
+            });
+        });
+
+        var makeTwoColorRule = new Action(() =>
+        {
+            // Rule with two possible colors
+            var c1 = rnd.Next(0, colors.Count);
+            var color1 = colors[c1];
+            colors.RemoveAt(c1);
+            var c2 = rnd.Next(0, colors.Count);
+            var color2 = colors[c2];
+            colors.RemoveAt(c2);
+            rules.Add(new Switch
+            {
+                Explanation = string.Format("The button is either {0} or {1}", color1, color2),
+                Cond = button => button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == color1).Color
+                    || button.GetComponent<MeshRenderer>().material.color == color.First(cl => cl.ColorName == color2).Color
+            });
+        });
+
+        makeSingleColorRule();
+        makeTwoColorRule();
+        if (rnd.Next(0, 2) != 0)
+            makeSingleColorRule();
+        else
+            makeTwoColorRule();
+
+        // Insert yes/no label rule
+        var label = rnd.Next(0, 2) != 0 ? "YES" : "NO";
+        var negated = rnd.Next(0, 2) != 0;
+        rules.Insert(rnd.Next(0, rules.Count), new Switch
+        {
+            Explanation = string.Format("The button {0} ‘{1}’", negated ? "is not labeled" : "is labeled", label),
+            Cond = button => negated
+                ? button.GetComponentInChildren<TextMesh>().text != label
+                : button.GetComponentInChildren<TextMesh>().text == label
+        });
+
+        var numbers = new List<int> { 1, 2, 3, 4 };
+        rnd.ShuffleFisherYates(numbers);
+        numbers.Insert(rnd.Next(0, numbers.Count), rnd.Next(1, 5));
+
+        rules.Add(new Switch { Explanation = "Otherwise", Cond = button => true });
+        var rulesArr = rules.ToArray();
+
+        for (var i = 0; i < 5; i++)
+            rulesArr[i].SwitchValue = numbers[i];
+        return rulesArr;
+    }
+
     void Start()
     {
-        Debug.LogFormat(@"[Yes and No #{0}] Version: 1.0", moduleId);
-
         rnd = RuleSeed.GetRNG();
-
-        var ixs = Enumerable.Range(0, allConditions.Count).ToList();
-        rnd.ShuffleFisherYates(ixs);
-
-        for (int i = 0; i < 4; i++)
-        {
-            leftSwitch.Add(new Switch { Explanation = allConditions[ixs.First()].Explanation, Cond = allConditions[ixs.First()].Cond, SwitchValue = rnd.Next(1, 5) });
-            ixs.RemoveAt(0);
-            rightSwitch.Add(new Switch { Explanation = allConditions[ixs.First()].Explanation, Cond = allConditions[ixs.First()].Cond, SwitchValue = rnd.Next(1, 5) });
-            ixs.RemoveAt(0);
-        }
-
-        leftSwitch.Add(new Switch { Explanation = "Otherwise", Cond = button => true, SwitchValue = rnd.Next(1, 5) });
-        rightSwitch.Add(new Switch { Explanation = "Otherwise", Cond = button => true, SwitchValue = rnd.Next(1, 5) });
+        leftSwitch = GetRuleSeedForButton(rnd);
+        rightSwitch = GetRuleSeedForButton(rnd);
 
         MixButtons();
         StartCoroutine(Game());
@@ -305,14 +302,14 @@ public class YesAndNoScript : MonoBehaviour
         allQuestion.Shuffle();
         questionList = allQuestion.Take(gameLength).ToList();
         Debug.LogFormat(@"[Yes and No #{0}] ----------MODULE SETUP----------", moduleId);
-        Debug.LogFormat(@"[Yes and No #{0}] Using ruleseed {1}", moduleId, rnd.Seed);
+        Debug.LogFormat(@"[Yes and No #{0}] Using ruleseed: {1}", moduleId, rnd.Seed);
         Debug.LogFormat(@"[Yes and No #{0}] ----------Left Switch Conditions----------", moduleId, rnd.Seed);
-        for (int i = 0; i < leftSwitch.Count; i++)
+        for (int i = 0; i < leftSwitch.Length; i++)
         {
             Debug.LogFormat(@"[Yes and No #{0}] Left switch condition {1}: {2} - Value: {3}", moduleId, (i + 1).ToString(), leftSwitch[i].Explanation, leftSwitch[i].SwitchValue.ToString());
         }
         Debug.LogFormat(@"[Yes and No #{0}] ----------Right Switch Conditions----------", moduleId, rnd.Seed);
-        for (int i = 0; i < leftSwitch.Count; i++)
+        for (int i = 0; i < leftSwitch.Length; i++)
         {
             Debug.LogFormat(@"[Yes and No #{0}] Right switch condition {1}: {2} - Value: {3}", moduleId, (i + 1).ToString(), rightSwitch[i].Explanation, rightSwitch[i].SwitchValue.ToString());
         }
