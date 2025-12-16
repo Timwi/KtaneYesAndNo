@@ -301,6 +301,7 @@ public class YesAndNoScript : MonoBehaviour
         var allQuestion = Enumerable.Range(0, questions.Count).ToList();
         allQuestion.Shuffle();
         questionList = allQuestion.Take(gameLength).ToList();
+        Debug.LogFormat(@"[Yes and No #{0}] Version: 2.0", moduleId);
         Debug.LogFormat(@"[Yes and No #{0}] ----------MODULE SETUP----------", moduleId);
         Debug.LogFormat(@"[Yes and No #{0}] Using ruleseed: {1}", moduleId, rnd.Seed);
         Debug.LogFormat(@"[Yes and No #{0}] ----------Left Switch Conditions----------", moduleId, rnd.Seed);
